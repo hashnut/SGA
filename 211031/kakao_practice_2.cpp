@@ -4,19 +4,20 @@
 #include <map>
 #include <algorithm>
 #include <iostream>
+#include <bitset>
 
 typedef unsigned int uint;
 
 using namespace std;
 
 uint alphaToUint(char x) {
-    int shift_val = (x - 'A') + 1;
+    int shift_val = (x - 'A');
     
     return static_cast<uint>(1 << shift_val);
 }
 
 uint alphaToUint(uint original, char x) {
-    int shift_val = (x - 'A') + 1;
+    int shift_val = (x - 'A');
 	
 	return (original & static_cast<uint>(1 << shift_val));
 }
@@ -45,18 +46,22 @@ string UintToAlpha(uint input) {
 void permutation(vector<string>& perm, string& input, vector<char>& output, int course_len, int idx) {
     
     if (input.length() < course_len) return;
-    else if (input.length() == course_len) perm.push_back(input);
+    else if (input.length() == course_len) {
+		perm.push_back(input);
+		return;
+	}
 	
 	// recursion exit condition
 	if (output.size() == course_len) {
+		//cout << "real input " << string(output.begin(), output.end()) << endl;
 		perm.push_back(string(output.begin(), output.end()));
 		return;
 	}
-	if (idx >= input.length()) return;
+	if (idx == input.length()) return;
     
     for (int i = idx; i < input.length(); i++) {
         output.push_back(input.at(i));
-		permutation(perm, input, output, course_len, idx+1);
+		permutation(perm, input, output, course_len, i+1);
 		output.pop_back();
     }
 }
@@ -73,9 +78,9 @@ vector<string> comb_string(vector<string> orders, int course_len) {
         permutation(perm, order, output, course_len, 0);
     }
 	
-	cout << "Permutataion Check" << endl;
-	for (auto elem : perm) cout << elem << " ";
-	cout << endl;
+	// cout << "Permutataion Check" << endl;
+	// for (auto elem : perm) cout << elem << " ";
+	// cout << endl;
 	
 	// first : string->uint, second : how many?
 	set<uint> course_set;
@@ -83,11 +88,17 @@ vector<string> comb_string(vector<string> orders, int course_len) {
 	uint new_key;
 	for (auto &elem : perm) {
 		new_key = alphaToUint(elem);
+		
+		//cout << elem << " is : " << static_cast<bitset<32>>(new_key) << endl;
+		
 		auto itr = course_set.find(new_key);
 		if (itr == course_set.end()) {
+			// cout << "new_key check " << new_key << endl;
 			course_set.insert(new_key);
 		}
 	}
+	
+	
 	
 	map<uint, uint> course_map;
 	
@@ -104,6 +115,9 @@ vector<string> comb_string(vector<string> orders, int course_len) {
 			}
 		}
 	}
+	
+	
+	
 	
 	// pick courses if itr->second >= 2
 	for (const auto& elem : course_map) {
