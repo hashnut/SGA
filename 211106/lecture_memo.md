@@ -19,4 +19,5 @@
 	이벤트그래프 : 
 		BeginPlay : 게임이 시작할 때 어떻게 해 줄건지
 		ActorBeginOverlap : 어떤 액터랑 겹쳤을 때 호출
-		Tick : 계속 호출해줌
+		Tick : 계속 호출해줌 
+		
